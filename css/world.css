@@ -1,0 +1,123 @@
+* {
+    box-sizing: border-box;
+    font-family: sans-serif, Verdana;
+    font-size: smaller;
+}
+
+.jqvmap-label {
+    position: absolute;
+    display: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #e8ebed;
+    color: #333333;
+    padding: 3px;
+    pointer-events: none;
+}
+
+.jqvmap-pin {
+    pointer-events: none;
+}
+
+.jqvmap-box-buttons {
+    position: absolute;
+}
+
+#quiz, .jqvmap-box-buttons {
+    top: 11px;
+}
+
+.jqvmap-box-button {
+    display: inline-block;
+    margin-left: 11px;
+    min-width: 33px;
+    min-height: 33px;
+    line-height: 33px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 6px;
+    background: #e8ebed;
+    color: #333333;
+    cursor: pointer;
+    text-align: center;
+    padding: 6px;
+}
+
+.jqvmap-region {
+    cursor: pointer;
+}
+
+.jqvmap-ajax_response {
+    width: 100%;
+    height: 500px;
+}
+
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+}
+
+#world {
+    height: 100%;
+    width: 100%;
+}
+
+#world {
+    float: left;
+}
+
+#quiz {
+    position: absolute;
+    right: 11px;
+    z-index: 1;
+}
+
+#quiz div {
+    float: left;
+}
+
+option {
+    padding: 3px 6px;
+    font-size: large !important;
+}
+
+input[type="text"] {
+    height: 35px;
+    padding: 5px 15px;
+    outline: none;
+    border: none;
+    background: #e8ebed;
+    color: #333333;
+    font-size: 14px;
+    border-radius: 6px 0 0 6px;
+}
+
+select.special-characters {
+    height: 35px;
+    -webkit-appearance: button;
+    -webkit-border-radius: 2px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-padding-end: 20px;
+    -webkit-padding-start: 2px;
+    -webkit-user-select: none;
+    border: 1px solid #AAA;
+    background: #e8ebed;
+    color: #333333;
+    font-size: inherit;
+    overflow: hidden;
+    padding: 5px 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 44px;
+}
+
+.jqvmap-disabled {
+    background-color: lightgray;
+}

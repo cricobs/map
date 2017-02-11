@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--todo create missing small countries-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>World Heads</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+    <link href="css/world.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <!--<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>-->
+    <script type="text/javascript" src="js/http_code.jquery.com_jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/jquery.jqvmap.js"></script>
+    <script type="text/javascript" src="image/world-001.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/pick/name/name-head.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/pick/weight/weight-000.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/quizHead.js" charset="utf-8"></script>
+
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('#world')
+                .vectorMap({
+                    map: 'world-000',
+                    backgroundColor: '#33CCFF',
+                    color: '#ffffff',
+                    hoverOpacity: 0.7,
+                    selectedColor: '#000000',
+                    enableZoom: true,
+                    showTooltip: true,
+                    scaleColors: ['#FF9900', '#663333', '#CC6600', '#006491', '#CC0033', '#339900'],
+                    values: weights,
+                    normalizeFunction: 'polynomial',
+                    multiSelectRegion: true
+                });
+
+            quiz_head.addElements(
+                $('#world'),
+                $("input"),
+                $("select.special-characters")
+            );
+        });
+    </script>
+</head>
+<body>
+
+<div id="quiz">
+    <div>
+        <form onsubmit="return quiz_head.selectFormInput(this);" action="#" autocomplete="off">
+            <label>
+                <input type="text" name="head" placeholder="head">
+            </label>
+        </form>
+    </div>
+    <div>
+        <label>
+            <select class="special-characters">
+                <option class="default" selected="selected"></option>
+            </select>
+        </label>
+    </div>
+</div>
+
+<div id="world" class="map"></div>
+</body>
+</html>
