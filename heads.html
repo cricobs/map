@@ -10,8 +10,10 @@
 
     <!--<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>-->
     <script type="text/javascript" src="js/http_code.jquery.com_jquery-1.11.3.js"></script>
+    <!--<script type="text/javascript" src="js/http_code.jquery.com_ui_1.9.2_jquery-ui.js"></script>-->
     <script type="text/javascript" src="js/jquery.jqvmap.js"></script>
     <script type="text/javascript" src="image/world-001.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/pick/name/name-country.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/pick/name/name-head.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/pick/weight/weight-000.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/quizHead.js" charset="utf-8"></script>
@@ -30,7 +32,12 @@
                     scaleColors: ['#FF9900', '#663333', '#CC6600', '#006491', '#CC0033', '#339900'],
                     values: weights,
                     normalizeFunction: 'polynomial',
-                    multiSelectRegion: true
+                    multiSelectRegion: true,
+//                    showLabels: true,
+                    onLabelShow: function(event, label, code) {
+                        label[0].innerHTML = name_countries[code] + ":" + label[0].innerHTML;
+                    }
+
                 });
 
             quiz_head.addElements(

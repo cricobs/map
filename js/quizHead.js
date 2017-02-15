@@ -48,7 +48,6 @@ function QuizHead(paths, names) {
 
 QuizHead.prototype.load = function () {
     this.loadPaths();
-
     jQuery.fn.vectorMap('addMap', this.name, {
         "width": this.width,
         "height": this.height,
@@ -65,7 +64,8 @@ QuizHead.prototype.loadPaths = function () {
     }
 
     if (Object.keys(this.names).length !== 0) {
-        throw new Error("unassigned names")
+        console.info(["unassigned names", this.names]);
+        // throw new Error("unassigned names")
     }
 };
 
@@ -166,9 +166,11 @@ QuizHead.prototype.addSelectCharacter = function (select) {
             .prop("selected", false);
 
         var input = $("input");
+        var position = input[0].selectionStart;
+        var value = input.val();
         input
             .focus()
-            .val(input.val() + option.text());
+            .val(value.substring(0, position) + option.text() + value.substring(position));
 
         select
             .find(".default")

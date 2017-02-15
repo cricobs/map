@@ -108,6 +108,7 @@ var names = {
     "ly": "s:Chairman of the Presidential Council and Prime Minister: Fayez al-Sarraj",
     "ma": "s:King: Mohammed VI | g:Head of Government: Abdelilah Benkirane",
     "md": "s:President: Igor Dodon | g:Prime Minister: Pavel Filip",
+    "me": "s:President: Filip Vujanović | g:Prime Minister: Duško Marković",
     "mg": "s:President: Hery Rajaonarimampianina | g:Prime Minister: Olivier Mahafaly Solonandrasana",
     "mk": "s:President: Gjorge Ivanov | g:Interim Prime Minister: Emil Dimitriev, Prime minister-designate: Nikola Gruevski",
     "ml": "s:President: Ibrahim Boubacar Keïta | g:Prime Minister: Modibo Keita",
@@ -181,5 +182,9 @@ var names = {
     "ye": "s:President: Abdrabbuh Mansur Hadi | g:Prime Minister: Ahmed Obeid bin Daghr",
     "za": "s:President: Jacob Zuma",
     "zm": "s:President: Edgar Lungu",
-    "zw": "s:President: Robert Mugabe"
+    "zw": "s:President: Robert Mugabe",
+    "bh": "s:King: Sheikh Hamad bin Isa Al Khalifa | g:Prime Minister: Prince Khalifa bin Salman Al Khalifa",
+    "tw": "s:President: Tsai Ing-wen | g:President of the Executive Yuan: Lin Chuan"
 };
+
+var name_heads = names;

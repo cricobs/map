@@ -97,7 +97,9 @@ input[type="text"] {
     color: #333333;
     font-size: 14px;
     border-radius: 6px 0 0 6px;
+    width: 444px;
 }
+
 
 select.special-characters {
     height: 35px;
@@ -120,4 +122,8 @@ select.special-characters {
 
 .jqvmap-disabled {
     background-color: lightgray;
+}
+
+.jqvmap-pin {
+    background-color: red;
 }

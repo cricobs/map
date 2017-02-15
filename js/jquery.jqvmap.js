@@ -7,6 +7,48 @@
  * @builddate 2016/06/02
  */
 
+function History() {
+    this.items = [[]];
+    this.index = 0;
+}
+
+History.prototype.current = function () {
+    if (this.index > this.items.length - 1) {
+        this.index = this.items.length - 1;
+    } else if (this.index < 0) {
+        this.index = 0;
+    }
+
+    return this.items[this.index]
+};
+
+History.prototype.previous = function () {
+    this.index--;
+
+    return this.current()
+};
+
+History.prototype.next = function () {
+    this.index++;
+
+    return this.current()
+};
+
+History.prototype.has_next = function () {
+    return this.items[this.index + 1] !== undefined
+};
+
+
+History.prototype.has_previous = function () {
+    return this.items[this.index - 1] !== undefined
+};
+
+History.prototype.append = function (item) {
+    this.index++;
+    this.items.splice(this.index, this.items.length - this.index, item);
+};
+
+
 var VectorCanvas = function (width, height, params) {
     this.mode = window.SVGAngle ? 'svg' : 'vml';
     this.params = params;
@@ -79,6 +121,7 @@ var JQVMap = function (params) {
         throw new Error('Invalid "' + params.map + '" map parameter. Please make sure you have loaded this map file in your HTML.');
     }
 
+    this.history_selection = new History();
     this.selectedRegions = [];
     this.multiSelectRegion = params.multiSelectRegion;
 
@@ -151,6 +194,18 @@ var JQVMap = function (params) {
             .addClass('jqvmap-zoomout')
             .addClass('jqvmap-box-button')
             .html('&#x2212;')
+            .appendTo(box);
+        jQuery('<div/>')
+            .addClass('jqvmap-undo')
+            .addClass('jqvmap-disabled')
+            .addClass('jqvmap-box-button')
+            .text("\u21A9")
+            .appendTo(box);
+        jQuery('<div/>')
+            .addClass('jqvmap-redo')
+            .addClass('jqvmap-disabled')
+            .addClass('jqvmap-box-button')
+            .text("\u21AA")
             .appendTo(box);
     }
 
@@ -307,9 +362,7 @@ var JQVMap = function (params) {
         this.placePins(pins, 'content');
     }
 
-    params.container.on("dblclick", function (e) {
-        map.deselectAll();
-    });
+    params.container.on("dblclick", map.deselectAll.bind(map));
 
     JQVMap.mapIndex++;
 };
@@ -585,31 +638,77 @@ JQVMap.prototype.applyTransform = function () {
     this.canvas.applyTransformParams(this.scale, this.transX, this.transY);
 };
 
+
+JQVMap.prototype.updateHistoryButtons = function () {
+    if (this.history_selection.has_previous()) {
+        this.container.find(".jqvmap-undo").removeClass("jqvmap-disabled");
+    } else {
+        this.container.find(".jqvmap-undo").addClass("jqvmap-disabled");
+    }
+    if (this.history_selection.has_next()) {
+        this.container.find(".jqvmap-redo").removeClass("jqvmap-disabled");
+    } else {
+        this.container.find(".jqvmap-redo").addClass("jqvmap-disabled");
+    }
+};
+
+
+JQVMap.prototype.updateZoomButtons = function () {
+    if (this.zoomCurStep == this.zoomMaxStep) {
+        this.container.find(".jqvmap-zoomin").addClass("jqvmap-disabled");
+    } else {
+        this.container.find(".jqvmap-zoomin").removeClass("jqvmap-disabled");
+    }
+
+    if (this.zoomCurStep == 1) {
+        this.container.find(".jqvmap-zoomout").addClass("jqvmap-disabled");
+    } else {
+        this.container.find(".jqvmap-zoomout").removeClass("jqvmap-disabled");
+    }
+};
+
+
+JQVMap.prototype.updateCountButton = function () {
+    var count = Object.keys(this.countries).length - this.selectedRegions.length;
+
+    this.container.find(".jqvmap-selected").text(count);
+};
+
+JQVMap.prototype.setSelectedRegions = function (regions) {
+    var i;
+    this.deselectAll(false);
+    for (i = 0; i < regions.length; i++) {
+        this.select(regions[i], null, false);
+    }
+};
+
 JQVMap.prototype.bindZoomButtons = function () {
     var map = this;
     var click_delay = 222, clicks = 0, click_timer = null;
     this.container
         .on("selectionChanged", function (e) {
-            var count = Object.keys(map.countries).length - map.selectedRegions.length;
-            $(this).find(".jqvmap-selected").text(count);
+            map.history_selection.append(map.selectedRegions.slice(0));
+            map.updateHistoryButtons();
+            map.updateCountButton();
         })
-        .on("zoomChanged", function (e) {
-            console.info(map.zoomCurStep);
-            if (map.zoomCurStep == map.zoomMaxStep) {
-                $(this).find(".jqvmap-zoomin").addClass("jqvmap-disabled");
-            } else {
-                $(this).find(".jqvmap-zoomin").removeClass("jqvmap-disabled");
-            }
-
-            if (map.zoomCurStep == 1) {
-                $(this).find(".jqvmap-zoomout").addClass("jqvmap-disabled");
-            } else {
-                $(this).find(".jqvmap-zoomout").removeClass("jqvmap-disabled");
-            }
-        });
+        .on("zoomChanged", map.updateZoomButtons.bind(map));
 
 
     this.container.find('.jqvmap-selected').text(Object.keys(map.countries).length);
+
+    this.container.find('.jqvmap-undo')
+        .on("click", function (e) {
+            map.setSelectedRegions(map.history_selection.previous());
+            map.updateHistoryButtons();
+            map.updateCountButton();
+        });
+
+    this.container.find('.jqvmap-redo')
+        .on("click", function (e) {
+            map.setSelectedRegions(map.history_selection.next());
+            map.updateHistoryButtons();
+            map.updateCountButton();
+        });
 
     this.container.find('.jqvmap-zoomin')
         .on("click", function (e) {
@@ -664,13 +763,14 @@ JQVMap.prototype.bindZoomButtons = function () {
         });
 };
 
-JQVMap.prototype.deselectAll = function () {
-    while (this.selectedRegions) {
-        this.deselect(this.selectedRegions[0])
+JQVMap.prototype.deselectAll = function (trigger_events) {
+    while (this.selectedRegions[0] !== undefined) {
+        this.deselect(this.selectedRegions[0], null, trigger_events)
     }
 };
 
-JQVMap.prototype.deselect = function (cc, path) {
+JQVMap.prototype.deselect = function (cc, path, trigger_events) {
+    trigger_events = trigger_events === undefined ? true : trigger_events;
     cc = cc.toLowerCase();
     path = path || jQuery('#' + this.getCountryId(cc))[0];
 
@@ -680,6 +780,7 @@ JQVMap.prototype.deselect = function (cc, path) {
         jQuery(this.container).trigger('regionDeselect.jqvmap', [cc]);
         path.currentFillColor = path.getOriginalFill();
         path.setFill(path.getOriginalFill());
+
     } else {
         for (var key in this.countries) {
             this.selectedRegions.splice(this.selectedRegions.indexOf(key), 1);
@@ -688,7 +789,9 @@ JQVMap.prototype.deselect = function (cc, path) {
         }
     }
 
-    this.container.trigger('selectionChanged');
+    if (trigger_events) {
+        this.container.trigger('selectionChanged');
+    }
 };
 
 JQVMap.prototype.getCountryId = function (cc) {
@@ -1000,7 +1103,8 @@ JQVMap.prototype.resize = function () {
     this.transY *= this.baseScale / curBaseScale;
 };
 
-JQVMap.prototype.select = function (cc, path) {
+JQVMap.prototype.select = function (cc, path, trigger_events) {
+    trigger_events = trigger_events === undefined ? true : trigger_events;
     cc = cc.toLowerCase();
     path = path || jQuery('#' + this.getCountryId(cc))[0];
 
@@ -1012,13 +1116,16 @@ JQVMap.prototype.select = function (cc, path) {
         }
 
         jQuery(this.container).trigger('regionSelect.jqvmap', [cc]);
+
         if (this.selectedColor && path) {
             path.currentFillColor = this.selectedColor;
             path.setFill(this.selectedColor);
         }
     }
 
-    this.container.trigger('selectionChanged');
+    if (trigger_events) {
+        this.container.trigger('selectionChanged');
+    }
 };
 
 JQVMap.prototype.selectIndex = function (cc) {

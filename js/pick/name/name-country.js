@@ -185,5 +185,9 @@ var names = {
     "al": "albania",
     "mk": "macedonia",
     "gr": "greece",
-    "vc": "saint vincent and the grenadines"
+    "me": "montenegro",
+    "vc": "saint vincent and the grenadines",
+    "bh": "bahrain"
 };
+
+var name_countries = names;
